@@ -4,11 +4,11 @@ extern crate serde_derive;
 
 mod settings;
 
+use config::ConfigError;
 use tide::{configuration::Configuration, App};
 
-fn main() {
-    let settings = crate::settings::Settings::new();
-    let settings = dbg!(settings.unwrap());
+fn main() -> Result<(), ConfigError> {
+    let settings = crate::settings::Settings::new()?;
 
     let app_config = Configuration::build()
         .address(settings.server_address.as_ref())
@@ -18,4 +18,5 @@ fn main() {
     app.config(app_config);
     app.at("/").get(async || "Hello World!");
     app.serve();
+    Ok(())
 }

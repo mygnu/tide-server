@@ -1,7 +1,9 @@
 [package]
-name = "tide-server-daemon"
+name = "tide-server"
 version = "0.1.0"
 authors = ["mygnu <tech@hgill.io>"]
+readme = "README.md"
+license = "MPL 2.0"
 edition = "2018"
 
 [dependencies]
@@ -13,3 +15,19 @@ serde_derive = "1.0"
 [profile.release]
 lto = true
 opt-level = 3
+
+[package.metadata.deb]
+maintainer = "Harry Gill <tech@gill.net.in>"
+copyright = "2019, Harry Gill"
+depends = "$auto, systemd"
+conf-files = ["/usr/local/etc/tide-config.ini", "/etc/systemd/system/tide-server.service"]
+extended-description = """\
+web-server written in rust.\
+"""
+section = "admin"
+priority = "optional"
+assets = [
+    ["target/release/tide-server", "/usr/local/bin/", "755"],
+    ["assets/tide-config.ini", "/usr/local/etc/", "644"],
+    ["assets/tide-server.service", "/etc/systemd/system/", "644"],
+]

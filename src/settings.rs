@@ -10,11 +10,12 @@ impl Settings {
   pub fn new() -> Result<Self, ConfigError> {
     let mut s = Config::new();
 
-    if cfg!(debug_assertions) {
-      s.merge(File::with_name("assets/tide-daemon.ini"))?;
-    } else {
-      s.merge(File::with_name("/usr/local/etc/tide-daemon.ini"))?;
-    }
+    // read the local file onyl in development mode
+    #[cfg(debug_assertions)]
+    s.merge(File::with_name("assets/tide-config.ini"))?;
+
+    #[cfg(not(debug_assertions))]
+    s.merge(File::with_name("/usr/local/etc/tide-config.ini"))?;
 
     s.try_into()
   }

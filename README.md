@@ -1,3 +1,3 @@
-# tide-server-daemon
+# tide-server - tutorial files
 
-rust webserver, deb, systemd, tutorial
+This repo is part of a tutorial, read it in full [creating 🌊 web-server .deb binary with rust](https://gill.net.in/posts/creating-web-server-deb-binary-with-rust/)
