@@ -1,22 +1,18 @@
-#![feature(async_await)]
-#[macro_use]
-extern crate serde_derive;
-
+use async_std::task;
 mod settings;
 
-use config::ConfigError;
-use tide::{configuration::Configuration, App};
+fn main() -> Result<(), std::io::Error> {
+    task::block_on(async {
+        let settings = crate::settings::Settings::new().unwrap();
 
-fn main() -> Result<(), ConfigError> {
-    let settings = crate::settings::Settings::new()?;
+        let server_address = format!("{}:{}", settings.server_address, settings.server_port);
 
-    let app_config = Configuration::build()
-        .address(settings.server_address.as_ref())
-        .port(settings.server_port)
-        .finalize();
-    let mut app = App::new(());
-    app.config(app_config);
-    app.at("/").get(async || "Hello World!");
-    app.serve();
-    Ok(())
+        let mut app = tide::new();
+
+        app.at("/").get(move |_| async move { Ok("Hello World!") });
+
+        app.listen(server_address).await?;
+
+        Ok(())
+    })
 }
