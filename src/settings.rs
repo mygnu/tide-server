@@ -9,15 +9,16 @@ pub struct Settings {
 
 impl Settings {
     pub fn new() -> Result<Self, ConfigError> {
-        let mut conf = Config::new();
+        let builder = Config::builder();
 
         // read the local file onyl in development mode
         #[cfg(debug_assertions)]
-        conf.merge(File::with_name("assets/tide-config.ini"))?;
+        let builder = builder.add_source(File::with_name("assets/tide-config.ini"));
 
         #[cfg(not(debug_assertions))]
-        conf.merge(File::with_name("/usr/local/etc/tide-config.ini"))?;
+        let builder = builder.add_source(File::with_name("/usr/local/etc/tide-config.ini"));
 
-        conf.try_into()
+        let config = builder.build()?;
+        config.try_deserialize()
     }
 }
